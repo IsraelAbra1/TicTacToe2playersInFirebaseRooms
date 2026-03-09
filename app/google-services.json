@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528939107116",
+    "project_id": "demo2playersinfbrooms",
+    "storage_bucket": "demo2playersinfbrooms.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528939107116:android:6c5c041dfa9da5656a2289",
+        "android_client_info": {
+          "package_name": "com.example.demo2playersinfbrooms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-tU3UWb_SCU5xBL4DpbzjqfTdfYJWYO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
