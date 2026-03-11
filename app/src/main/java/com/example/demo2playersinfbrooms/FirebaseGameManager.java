@@ -23,39 +23,7 @@ public class FirebaseGameManager {
         // Points to "games/{gameRoomId}" in your Realtime Database
         this.gameRef = FirebaseDatabase.getInstance().getReference("games").child(gameRoomId);
 
-        setupGameListener();
-    }
-
-    /**
-     * Joins the game. If it doesn't exist, creates it. If Player 1 is there, joins as Player 2.
-     */
-    public void joinGame() {
-        gameRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DataSnapshot snapshot = task.getResult();
-                if (!snapshot.exists()) {
-                    // Room is empty, create it as Player 1
-                    GameState newState = new GameState(myPlayerId);
-                    gameRef.setValue(newState);
-                } else {
-                    GameState currentState = snapshot.getValue(GameState.class);
-                    // If room exists but needs a second player
-                    if (currentState != null && currentState.player2Id == null && !currentState.player1Id.equals(myPlayerId)) {
-                        currentState.player2Id = myPlayerId;
-                        currentState.status = "PLAYING";
-                        gameRef.setValue(currentState);
-                    }
-                }
-            } else {
-                listener.onGameError("Failed to connect to room.");
-            }
-        });
-    }
-
-    /**
-     * Listens for any changes to the game state in real-time.
-     */
-    public void setupGameListener() {
+        // add listener for the room
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -74,63 +42,36 @@ public class FirebaseGameManager {
         });
     }
 
-    /**
-     * Attempts to make a move, ensuring it is the player's turn.
-     */
-    public void makeMove(Position moveData) {
+     // update the Firebase with the new move, ensuring it is the player's turn.
+    public void makeMove(Position position) {
         gameRef.get().addOnSuccessListener(snapshot -> {
             GameState state = snapshot.getValue(GameState.class);
 
-            if (state != null && "PLAYING".equals(state.status)) {
+            if (state != null && "PLAYING".equals(state.status))
+            {
                 // Ensure it's actually this player's turn
-                if (myPlayerId.equals(state.currentTurnId)) {
-                    state.lastMove = moveData;
+                if (myPlayerId.equals(state.currentTurnId))
+                {
+                    state.lastMove = position;
+
                     // Switch turns
-                    state.currentTurnId = myPlayerId.equals(state.player1Id) ? state.player2Id : state.player1Id;
+                    if (myPlayerId.equals(state.player1Id)) {
+                        // If I am Player 1, then it is now Player 2's turn
+                        state.currentTurnId = state.player2Id;
+                    } else {
+                        // Otherwise (I must be Player 2), so it is now Player 1's turn
+                        state.currentTurnId = state.player1Id;
+                    }
 
                     // Push update to Firebase
                     gameRef.setValue(state);
-                } else {
+                }
+                else
+                {
                     listener.onGameError("It's not your turn!");
                 }
             }
         });
     }
 
-    /**
-     * Attempts to place a piece on the 2D board at the specified coordinates.
-     */
-/*    public void makeMove(int row, int col) {
-        gameRef.get().addOnSuccessListener(snapshot -> {
-            GameState state = snapshot.getValue(GameState.class);
-
-            if (state != null && "PLAYING".equals(state.status)) {
-
-                // 1. Check if it's the player's turn
-                if (myPlayerId.equals(state.currentTurnId)) {
-
-                    // 2. Check if the requested spot on the board is empty
-                    if (state.board.get(row).get(col).isEmpty()) {
-
-                        // Determine the piece ('X' for Player 1, 'O' for Player 2)
-                        String piece = myPlayerId.equals(state.player1Id) ? "X" : "O";
-
-                        // 3. Update the board
-                        state.board.get(row).set(col, piece);
-
-                        // 4. Switch turns
-                        state.currentTurnId = myPlayerId.equals(state.player1Id) ? state.player2Id : state.player1Id;
-
-                        // 5. Push the updated board and state to Firebase
-                        gameRef.setValue(state);
-
-                    } else {
-                        listener.onGameError("That spot is already taken!");
-                    }
-                } else {
-                    listener.onGameError("It's not your turn!");
-                }
-            }
-        });
-    }*/
 }

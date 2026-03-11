@@ -15,7 +15,21 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String myId = "player_123"; // Retrieve your actual user ID here
+    private String myId = UUID.randomUUID().toString(); // get random string
+    //  String myId = "player_" + System.currentTimeMillis();
+
+
+    // if the app use Authentication
+/*
+    // 1. Get the Firebase Auth instance
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    // 2. Get the currently logged-in user
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+
+    if (currentUser != null) {
+        // 3. The user is logged in! Grab their official Firebase UID.
+        String myId = currentUser.getUid();*/
 
 
     @Override
@@ -26,14 +40,13 @@ public class MainActivity extends AppCompatActivity {
         // 1. Find the button by its ID
         Button btnStartGame = findViewById(R.id.btnStartGame);
 
-        myId = UUID.randomUUID().toString();
+        //myId = UUID.randomUUID().toString(); // get random string
 
         // 2. Set the click listener
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(intent);*/
+
                 // Show a loading spinner on your UI here
 
                 Matchmaker matchmaker = new Matchmaker(myId, new Matchmaker.MatchmakerListener() {

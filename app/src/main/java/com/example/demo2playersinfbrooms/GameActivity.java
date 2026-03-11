@@ -30,7 +30,7 @@ public class GameActivity extends AppCompatActivity {
 
         // 3. Safety check to ensure we actually got the data from the Intent
         if (roomId != null && myId != null) {
-            // 4. Initialize the Game Manager immediately!
+            // 4. Initialize the Game Manager
             setupGameManager();
         } else {
             // If data is missing, show an error and close the activity
@@ -57,14 +57,20 @@ public class GameActivity extends AppCompatActivity {
 
         // Start listening to Firebase for updates in this specific room
         // (Make sure setupGameListener() is public inside FirebaseGameManager!)
-        gameManager.setupGameListener();
+
+
+        // TODO: 11/03/2026 check 
+        //gameManager.setupGameListener();
     }
 
     private void updateUI(GameState state) {
-        if ("WAITING".equals(state.status)) {
+        if ("WAITING".equals(state.status))
+        {
             Toast.makeText(this, "Waiting for opponent to join...", Toast.LENGTH_SHORT).show();
 
-        } else if ("PLAYING".equals(state.status)) {
+        } else
+            if ("PLAYING".equals(state.status))
+        {
 
             // Update the UI board with the opponent's (or our own) last move
             if (state.lastMove != null) {
@@ -77,13 +83,6 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Waiting for opponent...", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    // Called when a user clicks a button on the screen
-    public void onPlayerTakesAction(Position actionTaken) {
-        if (gameManager != null) {
-            gameManager.makeMove(actionTaken);
         }
     }
 

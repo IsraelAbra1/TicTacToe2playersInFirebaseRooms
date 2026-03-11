@@ -41,6 +41,19 @@ public class Matchmaker {
                             DataSnapshot gameSnap = snapshot.getChildren().iterator().next();
                             String roomId = gameSnap.getKey();
 
+
+                            /*
+                            This line is basically reaching into the "folder" to pull out the single game inside it.
+                            snapshot.getChildren(): This gets a list of all the items inside your search results.
+                            .iterator(): This sets up a way for Java to loop through that list.
+                            .next(): This says, "Just grab the very first item in the list and stop." Because we used if (snapshot.exists()) right before this, we are 100% sure there is at least one item to grab.
+                            Now, gameSnap holds just the specific data for that one room.
+                            String roomId = gameSnap.getKey();
+                            In Firebase terminology, the "Key" is the name of the folder that holds the data.
+                            By calling .getKey(), you are extracting the literal string "-Nxyz123abc_ROOM_ID".
+                            We save this to the roomId string. Now you have the exact address of the room, and you can pass it to your FirebaseGameManager so it knows exactly where to listen for game moves!
+                             */
+
                             // Try to claim the Player 2 spot
                             tryJoinExistingGame(roomId);
                         } else {
